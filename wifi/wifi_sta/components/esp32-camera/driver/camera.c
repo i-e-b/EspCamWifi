@@ -34,15 +34,15 @@
 #include "esp_camera.h"
 #include "camera_common.h"
 #include "xclk.h"
-#if CONFIG_OV2640_SUPPORT
+//#if CONFIG_OV2640_SUPPORT
 #include "ov2640.h"
-#endif
-#if CONFIG_OV7725_SUPPORT
-#include "ov7725.h"
-#endif
-#if CONFIG_OV3660_SUPPORT
-#include "ov3660.h"
-#endif
+//#endif
+//#if CONFIG_OV7725_SUPPORT
+//#include "ov7725.h"
+//#endif
+//#if CONFIG_OV3660_SUPPORT
+//#include "ov3660.h"
+//#endif
 
 typedef enum {
     CAMERA_NONE = 0,

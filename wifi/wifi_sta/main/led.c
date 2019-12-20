@@ -19,21 +19,22 @@ void led_brightness(int duty) {
     #define LEDC_HS_CH0_CHANNEL    LEDC_CHANNEL_5    
     #define LEDC_TEST_DUTY         (10)
 
-    duty = 1024 - duty;
+    duty = 25;//1024 - duty;
 
     ledc_timer_config_t ledc_timer = {
         .bit_num = LEDC_TIMER_10_BIT, // resolution of PWM duty
-        .freq_hz = 5000,              // frequency of PWM signal
+        .freq_hz = 500,              // frequency of PWM signal (was 5000)
         .speed_mode = LEDC_HS_MODE,   // timer mode
         .timer_num = LEDC_HS_TIMER    // timer index
     };
+    ledc_timer.clk_cfg = LEDC_USE_APB_CLK;//LEDC_AUTO_CLK;
     // Set configuration of timer0 for high speed channels
     ledc_timer_config(&ledc_timer);
     
     ledc_channel_config_t ledc_channel = 
     {
         .channel    = LEDC_HS_CH0_CHANNEL,
-        .duty       = 900,
+        .duty       = duty,
         .gpio_num   = LEDC_HS_CH0_GPIO,
         .speed_mode = LEDC_HS_MODE,
         .timer_sel  = LEDC_HS_TIMER

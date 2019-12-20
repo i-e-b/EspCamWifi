@@ -256,6 +256,8 @@ void twi_init(unsigned char sda, unsigned char scl)
 
     pinMode(twi_sda, INPUT_PULLUP);
     pinMode(twi_scl, INPUT_PULLUP);
+    //pinMode(twi_sda, OPEN_DRAIN | PULLUP | INPUT | OUTPUT);
+    //pinMode(twi_scl, OPEN_DRAIN | PULLUP | INPUT | OUTPUT); 
     twi_setClock(100000);
 }
 

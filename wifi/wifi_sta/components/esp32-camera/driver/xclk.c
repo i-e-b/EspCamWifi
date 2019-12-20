@@ -20,6 +20,8 @@ esp_err_t camera_enable_out_clock(camera_config_t* config)
     timer_conf.freq_hz = config->xclk_freq_hz;
     timer_conf.speed_mode = LEDC_HIGH_SPEED_MODE;
     timer_conf.timer_num = config->ledc_timer;
+    timer_conf.clk_cfg = LEDC_USE_APB_CLK;
+    ESP_LOGI(TAG,"dr = %d, fr = %d", timer_conf.duty_resolution, timer_conf.freq_hz);
     esp_err_t err = ledc_timer_config(&timer_conf);
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "ledc_timer_config failed, rc=%x", err);
@@ -39,6 +41,7 @@ esp_err_t camera_enable_out_clock(camera_config_t* config)
         ESP_LOGE(TAG, "ledc_channel_config failed, rc=%x", err);
         return err;
     }
+    periph_module_enable(PERIPH_LEDC_MODULE);
     return ESP_OK;
 }
 

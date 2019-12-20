@@ -4,8 +4,8 @@
 
 
 /* Define ------------------------------------------------------------------- */
-//#define CAM_PIN_PWDN    -1 //power down is not used
-#define CAM_PIN_RESET   15 //software reset will be performed
+#define CAM_PIN_PWDN    -1 //power down is not used
+#define CAM_PIN_RESET   -1 //15 //software reset will be performed
 #define CAM_PIN_XCLK    27
 #define CAM_PIN_SIOC    23
 
@@ -16,14 +16,15 @@
 #define CAM_PIN_D3      5
 #define CAM_PIN_D2      34
 #define CAM_PIN_D1      35
-#define CAM_PIN_D0      32
+#define CAM_PIN_D0      17
 
 #define CAM_PIN_HREF    26
 #define CAM_PIN_PCLK    21
 
-#define CAM_XCLK_FREQ   10000000
-#define CAMERA_LED_GPIO 14
+#define CAM_XCLK_FREQ   20000000
+#define CAMERA_LED_GPIO 16
 
+#define CONFIG_ESP32_CAMERA_BOARD 1
 
 #ifdef CONFIG_ESP32_CAMERA_BOARD
     #define CAM_PIN_SIOD    25

@@ -17,17 +17,9 @@
 #include "config.h"
 
 static const char* TAG = "camera";
-#define CAM_USE_WIFI
+#define CAM_USE_WIFI 1
 
-#if 0
-#define ESP_WIFI_SSID "M5Psram_Cam"
-#define ESP_WIFI_PASS ""
-#else
-
-#define ESP_WIFI_SSID "M5-2.4G"
-#define ESP_WIFI_PASS "Office@888888"
-
-#endif
+#include "~/code/wifi.h"
 
 #define MAX_STA_CONN  1
 
@@ -37,7 +29,8 @@ static const char* _STREAM_BOUNDARY = "\r\n--" PART_BOUNDARY "\r\n";
 static const char* _STREAM_PART = "Content-Type: image/jpeg\r\nContent-Length: %u\r\n\r\n";
 
 static EventGroupHandle_t s_wifi_event_group;
-static ip4_addr_t s_ip_addr;
+//static ip4_addr_t s_ip_addr;
+static esp_ip4_addr_t s_ip_addr;
 const int CONNECTED_BIT = BIT0;
 extern void led_brightness(int duty);
 static camera_config_t camera_config = {
@@ -60,14 +53,14 @@ static camera_config_t camera_config = {
 
     //XCLK 20MHz or 10MHz
     .xclk_freq_hz = CAM_XCLK_FREQ,
-    .ledc_timer = LEDC_TIMER_0,
-    .ledc_channel = LEDC_CHANNEL_0,
+    .ledc_timer = LEDC_TIMER_1,
+    .ledc_channel = LEDC_CHANNEL_1,
 
     .pixel_format = PIXFORMAT_JPEG,//YUV422,GRAYSCALE,RGB565,JPEG
-    .frame_size = FRAMESIZE_SVGA,//QQVGA-UXGA Do not use sizes above QVGA when not JPEG
+    .frame_size = FRAMESIZE_QVGA,//QQVGA-UXGA Do not use sizes above QVGA when not JPEG
 
     .jpeg_quality = 15, //0-63 lower number means higher quality
-    .fb_count = 2 //if more than one, i2s runs in continuous mode. Use only with JPEG
+    .fb_count = 1 //if more than one, i2s runs in continuous mode. Use only with JPEG
 };
 
 static void wifi_init_softap();
@@ -83,7 +76,21 @@ void app_main()
         ESP_ERROR_CHECK( nvs_flash_init() );
     }
 
+    // --TEST-- try to ensure camera will remain powered up
+gpio_config_t gpio_pwr_config;
+gpio_pwr_config.pin_bit_mask = (1ULL << 32);
+gpio_pwr_config.mode = GPIO_MODE_OUTPUT;
+gpio_pwr_config.pull_down_en = GPIO_PULLDOWN_DISABLE;
+gpio_pwr_config.pull_up_en = GPIO_PULLUP_DISABLE;
+gpio_pwr_config.intr_type = GPIO_INTR_DISABLE;
+gpio_config(&gpio_pwr_config);
+gpio_set_level(32,0);
+vTaskDelay(10/ portTICK_PERIOD_MS);
+// --END--
+
+    ESP_LOGI(TAG, "IEB - Camera pre-init");
     err = esp_camera_init(&camera_config);
+    ESP_LOGI(TAG, "IEB - Camera post-init");
 
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Camera Init Failed");
@@ -91,7 +98,8 @@ void app_main()
             vTaskDelay(10);
         }
     } else {
-        led_brightness(20);
+	ESP_LOGI(TAG, "IEB - Camera init was OK, turning on LED");
+        led_brightness(5);
     }
 
 #ifdef FISH_EYE_CAM
@@ -236,6 +244,7 @@ static esp_err_t event_handler(void* ctx, system_event_t* event)
       break;
     case SYSTEM_EVENT_STA_GOT_IP:
       ESP_LOGI(TAG, "got ip:%s", ip4addr_ntoa(&event->event_info.got_ip.ip_info.ip));
+      //s_ip_addr = event->event_info.got_ip.ip_info.ip;
       s_ip_addr = event->event_info.got_ip.ip_info.ip;
       xEventGroupSetBits(s_wifi_event_group, CONNECTED_BIT);
       break;
@@ -279,6 +288,7 @@ static void wifi_init_softap()
   ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
   ESP_ERROR_CHECK(esp_wifi_set_config(ESP_IF_WIFI_STA, &wifi_config));
   ESP_ERROR_CHECK(esp_wifi_start());
+  ESP_LOGI(TAG, "IEB - Back from Wifi start");
 }
 
 #endif
