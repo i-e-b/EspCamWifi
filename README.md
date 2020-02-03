@@ -1,3 +1,11 @@
+# To get started
+
+* start a shell
+* run `. ~/esp/esp-idf/export.sh`
+* cd to `/wifi/wifi_sta`
+  * `make` to build, then `make flash` to upload to Esp32 board, then `make monitor` to read serial output from board.
+
+
 # Camera unit description
 
 English | [中文](https://github.com/m5stack/m5stack-cam-psram/blob/master/README_zh_CN.md)
