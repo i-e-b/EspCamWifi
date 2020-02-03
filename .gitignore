@@ -1,3 +1,6 @@
+# Secure files
+wifipw.h
+
 # Compiled Object files
 *.slo
 *.lo

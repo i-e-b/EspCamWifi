@@ -1,5 +1,7 @@
 # To get started
 
+You will need to link a wifi password file like `ln -s ~/code/wifipw.h wifi/wifi_sta/main/wifipw.h` that defines `ESP_WIFI_SSID` and `ESP_WIFI_PASS`
+
 * start a shell
 * run `. ~/esp/esp-idf/export.sh`
 * cd to `/wifi/wifi_sta`

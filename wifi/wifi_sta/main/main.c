@@ -19,7 +19,7 @@
 static const char* TAG = "camera";
 #define CAM_USE_WIFI 1
 
-#include "~/code/wifi.h"
+#include "wifipw.h"
 
 #define MAX_STA_CONN  1
 
